@@ -1,6 +1,7 @@
 #Flash text is an amazing new library which allows us to find and replace words in a document.
 #It uses a tree data structure called Trie for efficient information storage and retrieval.
 #Both finding and replacement happens over a single pass.
+#It is blazing fast compared to Regular Expressions,provided that your data is of comparable size.
 
 from flashtext import KeywordProcessor
 document="""Welcome to Fractal's World.Fractal Analytics is one of the leading analytics companies in India"""

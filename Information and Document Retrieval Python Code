@@ -1,0 +1,27 @@
+#Code to find the most relevant documents containing exact/similar words as entered by the user.
+#Algorithm used : KDTree(KNN+Decision Trees)
+
+import pandas as pd
+import nltk
+import numpy as np
+import os
+os.chdir('Enter path here')
+
+data=pd.read_csv('name of the csv file')
+
+from sklearn.feature_extraction.text import CountVectorizer
+count_vect=CountVectorizer()
+x_train=count_vect.fit_transform(data)
+
+
+from sklearn.feature_extraction.text import TfidfTransformer
+tfidf_transformer=TfidfTransformer()
+x_train_tfidf=tfidf_transformer.fit_transform(x_train)
+x_train_tfidf.shape
+data['tfidf']=list(x_train_tfidf.toarray())
+
+from sklearn.neighbors import KDTree 
+kdt=KDTree(data['tfidf'].tolist(),leaf_size=3)
+dist,idx=kdt.query(data['tfidf'][data['Field name where matching has to be done']=='Keywords to be used for search'].tolist(),k='Number of nearest documents to be retrieved')
+
+#idx will give the index position of the closest matches found

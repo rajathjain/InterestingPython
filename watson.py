@@ -6,12 +6,12 @@ import twitter
 from watson_developer_cloud import PersonalityInsightsV2 as PersonalityInsights
 def analyze(handle):
 
-	twitter_consumer_key = '5tuZSFWJJYVvNsLzxNmIVPOm0'  
-	twitter_consumer_secret = 'pgB2lA9pONrLbxZjwoNm9uIXZuWvsxco1QTH0En27972Ey87nc'  
-	twitter_access_token = '4854736844-svnTNDWwLwTrS3M7msv8A5yYUyy0tQsBvxaTAbq'  
-	twitter_access_secret = 'CjCtyBVbwZ6UAjU9wlJt1rGxxatxtcTxt7Pp9KOnFnAQU'
+	twitter_consumer_key = 'xxxxxxxxxxxxxxxxxxx'  
+	twitter_consumer_secret = 'xxxxxxxxxxxxxxxxx'  
+	twitter_access_token = 'xxxxxxxxxxxxxxxxxxxxxxx'  
+	twitter_access_secret = 'xxxxxxxxxxxxxxxxxxxxx'
 
-	twitter_api = twitter.Api(consumer_key=twitter_consumer_key, consumer_secret=twitter_consumer_secret, 			      access_token_key=twitter_access_token, access_token_secret=twitter_access_secret)
+	twitter_api = twitter.Api(consumer_key=twitter_consumer_key, consumer_secret=twitter_consumer_secret,access_token_key=twitter_access_token, access_token_secret=twitter_access_secret)
 
 
 
@@ -22,8 +22,8 @@ def analyze(handle):
 	for s in statuses:
 	    if (s.lang =='en'):
     			text += str(s.text.encode("utf-8"))
-	pi_username='169f963b-b5a0-4f80-847d-853484b2c99f'
-	pi_password='fxQAEkRgxkZs'
+	pi_username='xxxxxxxxxxxxxxxxxxx'
+	pi_password='xxxxxxxxxxxxxxxxxxxx'
 	personality_insights=PersonalityInsights(username=pi_username, password=pi_password)
 	pi_result=personality_insights.profile(text)
 	return pi_result
@@ -48,7 +48,7 @@ def compare(dict1, dict2):
     		if dict1[keys] != dict2[keys]:
                         compared_data[keys] = abs(dict1[keys] - dict2[keys])
 	return compared_data
-user_handle = "@Codecademy"
+user_handle = "@rajathbarlota"
 celebrity_handle = "@IBM"
 user_result=analyze(user_handle)
 celebrity_result = analyze(celebrity_handle)

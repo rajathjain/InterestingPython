@@ -1,0 +1,49 @@
+def initialize_words():
+    content = None
+    with open('/home/curl/PycharmProjects/Selenium/words.txt') as f: 
+        content = f.readlines()
+    return [word.rstrip('\n') for word in content]
+
+
+def parse_sentence(sentence, wordlist):
+    new_sentence = "" # output
+    terms = sentence.split(' ')
+    for term in terms:
+        if term[0] == '#': # this is a hashtag, parse it
+            new_sentence += parse_tag(term, wordlist)
+        else: # Just append the word
+            new_sentence += term
+        new_sentence += " "
+
+    return new_sentence
+
+
+def parse_tag(term, wordlist):
+    words = []
+    # Remove hashtag, split by dash
+    tags = term[1:].split('-')
+    for tag in tags:
+        word = find_word(tag, wordlist)
+        while word != None and len(tag) > 0:
+            words.append(word)
+            if len(tag) == len(word): # Special case for when eating rest of word
+                break
+            tag = tag[len(word):]
+            word = find_word(tag, wordlist)
+    return " ".join(words)
+
+def find_word(token, wordlist):
+    print(token)
+    i = len(token) + 1
+    while i > 1:
+        i -= 1
+        print(token[:i])
+        if token[:i] in wordlist:
+            return token[:i]
+    return None
+
+
+wordlist = initialize_words()
+sentence = "#EnjoyYourDay"
+res=parse_sentence(sentence, wordlist)
+

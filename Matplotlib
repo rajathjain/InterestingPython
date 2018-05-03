@@ -1,0 +1,121 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import pandas as pd
+import os
+import json
+from descartes import PolygonPatch
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import pandas as pd
+import re
+
+consti_names=os.listdir("/home/curl/Desktop/EA/results/")
+consti_names.remove('State_Values')
+
+state_cast=[]
+for i in range(len(consti_names)):
+    caste_data = pd.read_excel("/home/curl/Desktop/EA/results/" + consti_names[i] + "/" + consti_names[i] + "_Castes.xlsx")
+    state_cast.append(caste_data.Name.values)
+
+state_caste = []
+[state_caste.extend(el) for el in state_cast]
+len(state_caste)
+
+unique_caste=list(set(state_caste))
+len(unique_caste)
+
+
+state_caste=[x.upper() for x in unique_caste]
+caste_heat=pd.DataFrame(index=consti_names,columns=state_caste)
+caste_heat=caste_heat.fillna(0)
+
+
+#Populating the  dataframe
+try:
+    for i in range(len(consti_names)):
+        caste_data=pd.read_excel("/home/curl/Desktop/EA/results/"+consti_names[i]+"/"+consti_names[i]+"_Castes.xlsx")
+        for j in caste_data['Name'].values:
+            caste_data.index=caste_data['Name'].values
+            if j.upper() in state_caste:
+                caste_heat.loc[consti_names[i],j.upper()]=caste_data.loc[j,'Values']
+except:
+    print(consti_names[i])
+    pass
+
+
+caste_heat.to_csv("Caste_Stats.csv")
+
+with open("final_caste.json") as json_file:
+    json_data = json.load(json_file)
+
+
+def plot_caste(caste_name):
+    count = 0
+    GREEN = '#008000'
+    GRAY='#929591'
+    fig = plt.figure()
+    fig.set_size_inches(10,10)
+    fig.suptitle(caste_name+" (2014)",fontsize=40)
+    plt.axis('off')
+    ax = fig.gca()
+    green_patch = mpatches.Patch(color='green', label='Opacity Represents  Population Density')
+    gray_patch = mpatches.Patch(color='gray', label='Not Major Caste')
+    plt.legend(handles=[green_patch,gray_patch],loc='lower right')
+    for j in range(len(json_data['features'])):
+        i = json_data['features'][j]
+        try:
+            try:
+                poly = i['geometry']
+                if caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] > 0 and caste_heat.loc[
+                    i['properties']["AC_NAME"].upper(), caste_name] < 5000:
+                    ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.3, zorder=2))
+                    ax.axis('scaled')
+                elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] >= 5000 and caste_heat.loc[
+                    i['properties']["AC_NAME"].upper(), caste_name] < 10000:
+                    ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.45, zorder=2))
+                    ax.axis('scaled')
+                elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] >= 10000 and caste_heat.loc[
+                    i['properties']["AC_NAME"].upper(), caste_name] < 20000:
+                    ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.65, zorder=2))
+                    ax.axis('scaled')
+                elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] > 20000 and caste_heat.loc[
+                    i['properties']["AC_NAME"].upper(), caste_name] < 30000:
+                    ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.85, zorder=2))
+                    ax.axis('scaled')
+                elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] > 30000:
+                    ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.1, zorder=2))
+                    ax.axis('scaled')
+                elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] == 0:
+                    ax.add_patch(PolygonPatch(poly, fc=GRAY, ec='black', alpha=0.3, zorder=2))
+                    ax.axis('scaled')
+
+            except:
+                 poly = i['geometry']['geometries'][0]
+                 if caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] > 0 and caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] < 5000:
+                     ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.3, zorder=2))
+                     ax.axis('scaled')
+                 elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] >= 5000 and caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] < 10000:
+                     ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.45, zorder=2))
+                     ax.axis('scaled')
+                 elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] >= 10000 and caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] < 20000:
+                     ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.65, zorder=2))
+                     ax.axis('scaled')
+                 elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] > 20000 and caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] < 30000:
+                     ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.85, zorder=2))
+                     ax.axis('scaled')
+                 elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] >30000:
+                     ax.add_patch(PolygonPatch(poly, fc=GREEN, ec='black', alpha=0.1, zorder=2))
+                     ax.axis('scaled')
+                 elif caste_heat.loc[i['properties']["AC_NAME"].upper(), caste_name] == 0:
+                     ax.add_patch(PolygonPatch(poly, fc=GRAY, ec='black', alpha=0.3, zorder=2))
+                     ax.axis('scaled')
+
+        except:
+            print(i)
+            pass
+    os.chdir("/home/curl/PycharmProjects/Selenium/Caste_Geo_Plots/")
+    fig.savefig(re.sub('/','',caste_name+'_G'+'.png'))  # save the figure to file
+
+
+for i in range(len(state_caste)):
+    plot_caste(state_caste[i])

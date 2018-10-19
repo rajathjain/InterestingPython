@@ -1,0 +1,13 @@
+from pip._internal import main as pipmain
+import importlib
+
+def install_packs(package):
+    for pack_name in package:
+        pack_spec = importlib.util.find_spec(pack_name)
+        found = pack_spec is not None
+        if found:
+            print("Package"+" "+pack_name+" already exists")
+        else:
+            print("Installing "+pack_name)
+            pipmain(['install', pack_name])
+    print("All necessary packages installed")
